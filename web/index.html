@@ -5,70 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Market Pulse</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <base href="/crypto-market-pulse/">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body class="bg-gray-900 text-white">
     <nav class="bg-gray-800 p-4 mb-8">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">Crypto Market Pulse</h1>
             <div class="flex space-x-4">
-                <a href="#dashboard" class="hover:text-blue-400">Dashboard</a>
-                <a href="#predictions" class="hover:text-blue-400">Predictions</a>
-                <a href="#monitor" class="hover:text-blue-400">Monitor</a>
-                <a href="https://github.com/SnypeAI/crypto-market-pulse" target="_blank" class="hover:text-blue-400">GitHub</a>
+                <select id="symbolSelect" class="bg-gray-700 rounded px-2 py-1">
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="SOL">Solana (SOL)</option>
+                </select>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto p-4">
-        <div class="bg-gray-800 p-6 rounded-lg mb-8">
-            <h2 class="text-2xl font-bold mb-4">Market Overview</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Status cards as before -->
+    <main class="container mx-auto px-4">
+        <!-- Market Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-lg font-bold mb-2">Price</h3>
+                <div id="currentPrice" class="text-3xl font-bold text-green-400">$0.00</div>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-lg font-bold mb-2">Prediction</h3>
+                <div id="prediction" class="text-3xl font-bold text-blue-400">$0.00</div>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-lg font-bold mb-2">Confidence</h3>
+                <div id="confidence" class="text-3xl font-bold text-yellow-400">0%</div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <!-- Predictions -->
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-xl font-bold mb-4">Latest Predictions</h3>
-                <div id="predictions-table" class="overflow-x-auto">
-                    <!-- Dynamic content -->
-                </div>
+        <!-- Technical Analysis Charts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <canvas id="candlestick-chart"></canvas>
             </div>
-
-            <!-- Alerts -->
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
-                <div id="alerts-list" class="space-y-2">
-                    <!-- Dynamic content -->
-                </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <canvas id="volume-chart"></canvas>
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-xl font-bold mb-4">Price Predictions</h3>
+        <!-- Technical Indicators -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <canvas id="indicators-chart"></canvas>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
                 <canvas id="predictions-chart"></canvas>
             </div>
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-xl font-bold mb-4">Model Performance</h3>
-                <canvas id="performance-chart"></canvas>
+        </div>
+
+        <!-- Model Performance -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <canvas id="accuracy-chart"></canvas>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <canvas id="alerts-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Alerts and Notifications -->
+        <div class="bg-gray-800 p-6 rounded-lg mb-8">
+            <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
+            <div id="alertsList" class="space-y-2">
+                <!-- Alerts will be inserted here -->
             </div>
         </div>
     </main>
 
     <footer class="bg-gray-800 mt-12 py-8">
         <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>Crypto Market Pulse - Real-time cryptocurrency analysis and predictions</p>
-            <p class="mt-2">
-                <a href="https://github.com/SnypeAI/crypto-market-pulse" class="text-blue-400 hover:text-blue-300">View on GitHub</a>
-            </p>
+            <p>Crypto Market Pulse - Real-time market analysis and predictions</p>
         </div>
     </footer>
 
+    <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
