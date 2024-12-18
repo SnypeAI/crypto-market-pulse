@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0] - 2024-12-18
+### Added
+- WebSocket integration for real-time data
+- Data processor for market data handling
+- Real-time market monitor
+- Alert system for price movements
+
 ## [1.2.0] - 2024-12-18
 ### Added
 - Enhanced sentiment analysis with VADER and TextBlob
