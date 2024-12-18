@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0] - 2024-12-18
+### Added
+- Comprehensive model monitoring system
+- Performance metrics collection
+- Automated monitoring reports
+- Model drift detection
+- Alert system for model performance
+- Visualization dashboards
+
 ## [1.4.0] - 2024-12-18
 ### Added
 - Machine learning prediction models (LSTM & Random Forest)
