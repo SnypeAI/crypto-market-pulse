@@ -1,7 +1,13 @@
 # Changelog
 
-## [1.1.0] - 2024-12-18
+## [1.2.0] - 2024-12-18
+### Added
+- Enhanced sentiment analysis with VADER and TextBlob
+- Custom cryptocurrency term weighting
+- Time-based sentiment aggregation
+- Sentiment trend analysis
 
+## [1.1.0] - 2024-12-18
 ### Added
 - Real-time market monitoring via WebSocket
 - Alert system for price and volume spikes
@@ -17,7 +23,6 @@
 - Test suite async compatibility
 
 ## [1.0.0] - 2024-12-18
-
 ### Added
 - Initial release
 - Basic market analysis
