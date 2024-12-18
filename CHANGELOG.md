@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0] - 2024-12-18
+### Added
+- Machine learning prediction models (LSTM & Random Forest)
+- Feature engineering pipeline
+- Model training workflow
+- Automated weekly model updates
+
 ## [1.3.0] - 2024-12-18
 ### Added
 - WebSocket integration for real-time data
