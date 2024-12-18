@@ -1,0 +1,54 @@
+name: Market Analysis Pipeline
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Run every 4 hours
+  workflow_dispatch:     # Manual trigger
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn tensorflow requests
+          
+      - name: Fetch market data
+        run: python scripts/fetch_market_data.py
+        env:
+          API_KEY: ${{ secrets.CRYPTO_API_KEY }}
+          
+      - name: Run technical analysis
+        run: python scripts/technical_analysis.py
+        
+      - name: Generate predictions
+        run: python scripts/ai_predictions.py
+        
+      - name: Create report
+        run: python scripts/generate_report.py
+        
+      - name: Update repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add reports/
+          git commit -m "📊 Update market analysis report"
+          git push
+        
+      - name: Generate visualization
+        run: python scripts/create_charts.py
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public

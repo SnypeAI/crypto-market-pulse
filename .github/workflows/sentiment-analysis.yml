@@ -1,0 +1,40 @@
+name: Sentiment Analysis
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+
+jobs:
+  analyze-sentiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          pip install tweepy praw textblob nltk transformers torch
+          
+      - name: Collect social media data
+        run: python scripts/collect_social_data.py
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          REDDIT_API_KEY: ${{ secrets.REDDIT_API_KEY }}
+          
+      - name: Analyze sentiment
+        run: python scripts/analyze_sentiment.py
+        
+      - name: Generate sentiment report
+        run: python scripts/generate_sentiment_report.py
+        
+      - name: Update repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add reports/sentiment/
+          git commit -m "📊 Update sentiment analysis"
+          git push
