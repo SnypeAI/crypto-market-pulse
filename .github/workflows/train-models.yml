@@ -1,0 +1,55 @@
+name: Train ML Models
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+  workflow_dispatch:     # Manual trigger
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10']
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Download historical data
+      run: python scripts/fetch_training_data.py
+      env:
+        API_KEY: ${{ secrets.CRYPTO_API_KEY }}
+        
+    - name: Train models
+      run: python scripts/train_models.py
+      
+    - name: Evaluate models
+      run: python scripts/evaluate_models.py
+      
+    - name: Save models
+      uses: actions/upload-artifact@v3
+      with:
+        name: ml-models
+        path: models/
+        
+    - name: Generate training report
+      run: python scripts/generate_training_report.py
+      
+    - name: Update model metrics
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add reports/model_metrics.json
+        git commit -m "📊 Update model metrics"
+        git push
