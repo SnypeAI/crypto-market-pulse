@@ -1,0 +1,33 @@
+name: Daily Market Analysis
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC daily
+  workflow_dispatch:     # Manual trigger
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Generate analysis
+        run: python scripts/generate_analysis.py
+        
+      - name: Commit report
+        run: |
+          git config --local user.email 'action@github.com'
+          git config --local user.name 'GitHub Action'
+          git add reports/
+          git commit -m '📊 Daily market analysis update'
+          git push
