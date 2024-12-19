@@ -1,6 +1,6 @@
 class AlertNotifier:
     def __init__(self):
-        self.channels = ['telegram', 'discord', 'email']
+        self.channels = ["telegram", "discord", "email"]
 
     def send_alerts(self, alerts):
         for alert in alerts:

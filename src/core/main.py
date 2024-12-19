@@ -1,7 +1,8 @@
-from data_collector import DataCollector
 from analyzer import MarketAnalyzer
-from reporter import ReportGenerator
+from data_collector import DataCollector
 from notifier import AlertNotifier
+from reporter import ReportGenerator
+
 
 class CryptoAnalysisPipeline:
     def __init__(self):
@@ -13,21 +14,23 @@ class CryptoAnalysisPipeline:
     def run(self):
         # Collect data
         market_data = self.collector.fetch_all_data()
-        
+
         # Analyze
         analysis = self.analyzer.analyze(market_data)
-        
+
         # Generate reports
         self.reporter.create_report(analysis)
-        
+
         # Check alerts
         alerts = self.analyzer.check_alerts(analysis)
         if alerts:
             self.notifier.send_alerts(alerts)
 
+
 def main():
     pipeline = CryptoAnalysisPipeline()
     pipeline.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
-from typing import Dict, List
-from datetime import datetime
 from collections import deque
+from datetime import datetime
+from typing import Dict, List
+
 
 class DataProcessor:
     def __init__(self, max_data_points: int = 1000):
@@ -14,22 +15,24 @@ class DataProcessor:
             self.price_data[symbol] = deque(maxlen=self.max_data_points)
             self.volume_data[symbol] = deque(maxlen=self.max_data_points)
 
-        self.price_data[symbol].append({
-            'timestamp': datetime.now(),
-            'price': float(data['p']),
-            'volume': float(data['q'])
-        })
+        self.price_data[symbol].append(
+            {
+                "timestamp": datetime.now(),
+                "price": float(data["p"]),
+                "volume": float(data["q"]),
+            }
+        )
 
     def process_order_book(self, symbol: str, data: Dict):
         self.order_book[symbol] = {
-            'bids': data['bids'],
-            'asks': data['asks'],
-            'timestamp': datetime.now()
+            "bids": data["bids"],
+            "asks": data["asks"],
+            "timestamp": datetime.now(),
         }
 
     def get_latest_price(self, symbol: str) -> float:
         if symbol in self.price_data and self.price_data[symbol]:
-            return self.price_data[symbol][-1]['price']
+            return self.price_data[symbol][-1]["price"]
         return 0.0
 
     def get_price_history(self, symbol: str) -> List[Dict]:
