@@ -3,24 +3,31 @@ import logging
 from datetime import datetime, timedelta
 from typing import List, Optional
 
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
 
 from src.data.fetcher import CryptoDataFetcher
+from src.db.database import SessionLocal
 from src.db.models import CryptoPrice, TechnicalIndicators
 from src.ml.feature_engineering import FeatureEngineer
-from src.db.database import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class DataPipeline:
     def __init__(self):
         self.fetcher = CryptoDataFetcher()
         self.engineer = FeatureEngineer()
         self.symbols = [
-            'BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'XRP/USDT',
-            'SOL/USDT', 'ADA/USDT', 'DOGE/USDT', 'AVAX/USDT'
+            "BTC/USDT",
+            "ETH/USDT",
+            "BNB/USDT",
+            "XRP/USDT",
+            "SOL/USDT",
+            "ADA/USDT",
+            "DOGE/USDT",
+            "AVAX/USDT",
         ]
 
     async def update_market_data(self):
@@ -35,17 +42,17 @@ class DataPipeline:
 
                     # Add technical indicators
                     df = self.engineer.add_technical_indicators(df)
-                    
+
                     # Store price data
                     for index, row in df.iterrows():
                         price = CryptoPrice(
                             symbol=symbol,
                             timestamp=index,
-                            open=row['open'],
-                            high=row['high'],
-                            low=row['low'],
-                            close=row['close'],
-                            volume=row['volume']
+                            open=row["open"],
+                            high=row["high"],
+                            low=row["low"],
+                            close=row["close"],
+                            volume=row["volume"],
                         )
                         db.add(price)
                         db.flush()  # Get the price_id
@@ -53,14 +60,14 @@ class DataPipeline:
                         # Store technical indicators
                         indicators = TechnicalIndicators(
                             price_id=price.id,
-                            rsi=row['rsi'],
-                            macd=row['macd'],
-                            macd_signal=row['macd_signal'],
-                            macd_hist=row['macd_diff'],
-                            bb_upper=row['bb_high'],
-                            bb_middle=row['bb_mid'],
-                            bb_lower=row['bb_low'],
-                            atr=row['atr']
+                            rsi=row["rsi"],
+                            macd=row["macd"],
+                            macd_signal=row["macd_signal"],
+                            macd_hist=row["macd_diff"],
+                            bb_upper=row["bb_high"],
+                            bb_middle=row["bb_mid"],
+                            bb_lower=row["bb_low"],
+                            atr=row["atr"],
                         )
                         db.add(indicators)
 
@@ -83,19 +90,21 @@ class DataPipeline:
                 await asyncio.sleep(60)  # Wait a minute before retrying
 
     @staticmethod
-    def get_latest_data(db: Session, symbol: str, limit: int = 1000) -> List[CryptoPrice]:
+    def get_latest_data(
+        db: Session, symbol: str, limit: int = 1000
+    ) -> List[CryptoPrice]:
         """Get the latest data for a symbol from the database."""
-        return db.query(CryptoPrice).filter(
-            CryptoPrice.symbol == symbol
-        ).order_by(
-            CryptoPrice.timestamp.desc()
-        ).limit(limit).all()
+        return (
+            db.query(CryptoPrice)
+            .filter(CryptoPrice.symbol == symbol)
+            .order_by(CryptoPrice.timestamp.desc())
+            .limit(limit)
+            .all()
+        )
 
     @staticmethod
     async def cleanup_old_data(db: Session, days: int = 30):
         """Remove data older than specified days."""
         cutoff = datetime.utcnow() - timedelta(days=days)
-        db.query(CryptoPrice).filter(
-            CryptoPrice.timestamp < cutoff
-        ).delete()
+        db.query(CryptoPrice).filter(CryptoPrice.timestamp < cutoff).delete()
         db.commit()
