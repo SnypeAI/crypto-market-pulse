@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+from typing import Dict, List
+
 import ccxt
 import pandas as pd
-from datetime import datetime, timedelta
-from typing import List, Dict
+
 
 class CryptoDataFetcher:
     def __init__(self):

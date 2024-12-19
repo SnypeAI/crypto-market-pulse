@@ -1,7 +1,9 @@
-from sqlalchemy import Column, DateTime, Float, Integer, String, ForeignKey, create_engine
+from sqlalchemy import (Column, DateTime, Float, ForeignKey, Integer, String,
+                        create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class CryptoPrice(Base):
     __tablename__ = "crypto_prices"
@@ -13,7 +15,8 @@ class CryptoPrice(Base):
     low = Column(Float)
     close = Column(Float)
     volume = Column(Float)
-    
+
+
 class TechnicalIndicators(Base):
     __tablename__ = "technical_indicators"
     id = Column(Integer, primary_key=True)
