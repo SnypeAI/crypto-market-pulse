@@ -37,3 +37,19 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+
+async def broadcast_updates(message: dict, channel: str = "all") -> None:
+    await manager.broadcast(message, channel)
+
+
+async def handle_websocket(websocket: WebSocket, channel: str = "all") -> None:
+    await manager.connect(websocket, channel)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            # Process incoming messages if needed
+    except Exception as e:
+        print(f"WebSocket error: {str(e)}")
+    finally:
+        manager.disconnect(websocket, channel)
