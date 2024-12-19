@@ -4,24 +4,33 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://backend:8000
-      - VITE_WS_URL=ws://backend:8000/ws
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000/ws
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
 
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/crypto_market_pulse
       - REDIS_URL=redis://redis:6379/0
+      - MODEL_PATH=/app/models
+      - BINANCE_API_KEY=${BINANCE_API_KEY}
+      - BINANCE_API_SECRET=${BINANCE_API_SECRET}
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
     depends_on:
       - db
       - redis
@@ -44,23 +53,29 @@ services:
     volumes:
       - redis_data:/data
 
-  celery_worker:
+  worker:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: celery -A src.tasks worker --loglevel=info
+      dockerfile: Dockerfile.backend
+    command: celery -A src.tasks.celery worker --loglevel=info
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/crypto_market_pulse
       - REDIS_URL=redis://redis:6379/0
+      - MODEL_PATH=/app/models
+      - BINANCE_API_KEY=${BINANCE_API_KEY}
+      - BINANCE_API_SECRET=${BINANCE_API_SECRET}
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
     depends_on:
       - redis
       - db
 
-  celery_beat:
+  beat:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: celery -A src.tasks beat --loglevel=info
+      dockerfile: Dockerfile.backend
+    command: celery -A src.tasks.celery beat --loglevel=info
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/crypto_market_pulse
       - REDIS_URL=redis://redis:6379/0
