@@ -1,10 +1,12 @@
 import asyncio
 import json
-from typing import Dict, Set, Optional
 from datetime import datetime
+from typing import Dict, Optional, Set
 
 from fastapi import WebSocket
+
 from src.pipeline.realtime import RealtimePipeline
+
 
 class ConnectionManager:
     def __init__(self):
@@ -12,7 +14,7 @@ class ConnectionManager:
             "market": set(),
             "technical": set(),
             "predictions": set(),
-            "all": set()
+            "all": set(),
         }
         self.last_messages: Dict[str, dict] = {}
         self.pipeline: Optional[RealtimePipeline] = None
@@ -48,7 +50,9 @@ class ConnectionManager:
         for dead in dead_connections:
             self.disconnect(dead, channel)
 
-    def start_pipeline(self, api_key: Optional[str] = None, api_secret: Optional[str] = None):
+    def start_pipeline(
+        self, api_key: Optional[str] = None, api_secret: Optional[str] = None
+    ):
         """Start the realtime data pipeline."""
         if not self.pipeline:
             self.pipeline = RealtimePipeline(api_key, api_secret)
@@ -60,7 +64,9 @@ class ConnectionManager:
             self.pipeline.stop()
             self.pipeline = None
 
+
 manager = ConnectionManager()
+
 
 async def connect_client(websocket: WebSocket, channel: str = "all"):
     await manager.connect(websocket, channel)
@@ -78,13 +84,18 @@ async def connect_client(websocket: WebSocket, channel: str = "all"):
     finally:
         manager.disconnect(websocket, channel)
 
+
 async def broadcast_updates(message: dict, channel: str = "all"):
     """Broadcast updates to all connected clients."""
     await manager.broadcast(message, channel)
 
-def start_realtime_updates(api_key: Optional[str] = None, api_secret: Optional[str] = None):
+
+def start_realtime_updates(
+    api_key: Optional[str] = None, api_secret: Optional[str] = None
+):
     """Start the realtime update pipeline."""
     manager.start_pipeline(api_key, api_secret)
+
 
 def stop_realtime_updates():
     """Stop the realtime update pipeline."""
