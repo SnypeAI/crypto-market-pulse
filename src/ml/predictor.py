@@ -36,8 +36,9 @@ class MarketPredictor:
 
         X, y = [], []
         for i in range(len(data) - lookback):
-            X.append(scaled_features[i : (i + lookback)])
-            y.append(scaled_features[i + lookback, 0])
+            slice_end = i + lookback
+            X.append(scaled_features[i:slice_end])
+            y.append(scaled_features[slice_end, 0])
 
         return np.array(X), np.array(y)
 
