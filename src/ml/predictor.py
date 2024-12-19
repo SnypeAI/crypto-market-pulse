@@ -36,7 +36,9 @@ class MarketPredictor:
 
         X, y = [], []
         for i in range(len(data) - lookback):
-            X.append(scaled_features[i:i + lookback])  # Fixed spacing around operators
+            X.append(
+                scaled_features[i : i + lookback]
+            )  # Fixed spacing around operators
             y.append(scaled_features[i + lookback, 0])
 
         return np.array(X), np.array(y)
