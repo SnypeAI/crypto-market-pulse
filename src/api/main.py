@@ -1,9 +1,10 @@
-from fastapi import FastAPI, WebSocket, BackgroundTasks
+from fastapi import BackgroundTasks, FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
-from .websocket import handle_websocket, broadcast_updates
 from src.ml.predictor import MarketPredictor
 from src.monitoring.metrics_collector import MetricsCollector
+
+from .websocket import broadcast_updates, handle_websocket
 
 app = FastAPI(title="Crypto Market Pulse API")
 
@@ -20,18 +21,22 @@ app.add_middleware(
 predictor = MarketPredictor()
 metrics = MetricsCollector()
 
+
 @app.on_event("startup")
 async def startup_event():
     background_tasks = BackgroundTasks()
     background_tasks.add_task(broadcast_updates)
 
+
 @app.get("/")
 async def read_root():
     return {"status": "online", "service": "Crypto Market Pulse API"}
 
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await handle_websocket(websocket)
+
 
 @app.websocket("/ws/{channel}")
 async def channel_websocket_endpoint(websocket: WebSocket, channel: str):
