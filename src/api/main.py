@@ -1,43 +1,61 @@
-from fastapi import BackgroundTasks, FastAPI, WebSocket
-from fastapi.middleware.cors import CORSMiddleware
+from typing import Dict, List
+from fastapi import FastAPI, WebSocket, Depends, HTTPException
+from sqlalchemy.orm import Session
 
-from src.ml.predictor import MarketPredictor
-from src.monitoring.metrics_collector import MetricsCollector
-
-from .websocket import broadcast_updates, handle_websocket
+from src.db.database import get_db
+from src.pipeline.data_pipeline import DataPipeline
+from src.pipeline.training_pipeline import TrainingPipeline
+from src.api.websocket import handle_websocket, broadcast_updates
 
 app = FastAPI(title="Crypto Market Pulse API")
+data_pipeline = DataPipeline()
+training_pipeline = TrainingPipeline()
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.get("/markets/{symbol}/prediction")
+async def get_prediction(symbol: str, db: Session = Depends(get_db)):
+    """Get price prediction for a specific symbol."""
+    try:
+        latest_data = data_pipeline.get_latest_data(db, symbol, limit=100)
+        if not latest_data:
+            raise HTTPException(status_code=404, detail=f"No data found for {symbol}")
 
-# Initialize components
-predictor = MarketPredictor()
-metrics = MetricsCollector()
+        # Convert to format needed for prediction
+        df = pd.DataFrame([{
+            'timestamp': d.timestamp,
+            'open': d.open,
+            'high': d.high,
+            'low': d.low,
+            'close': d.close,
+            'volume': d.volume
+        } for d in latest_data])
 
+        prediction = training_pipeline.predictor.predict(df)
+        return prediction
 
-@app.on_event("startup")
-async def startup_event():
-    background_tasks = BackgroundTasks()
-    background_tasks.add_task(broadcast_updates)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/markets/available")
+def get_available_markets():
+    """Get list of available market symbols."""
+    return {"symbols": data_pipeline.symbols}
 
-@app.get("/")
-async def read_root():
-    return {"status": "online", "service": "Crypto Market Pulse API"}
+@app.get("/markets/{symbol}/data")
+def get_market_data(symbol: str, limit: int = 100, db: Session = Depends(get_db)):
+    """Get historical market data for a symbol."""
+    data = data_pipeline.get_latest_data(db, symbol, limit)
+    return {"data": data}
 
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await handle_websocket(websocket)
-
+@app.post("/training/start")
+async def start_training(symbols: List[str], db: Session = Depends(get_db)):
+    """Start training models for specified symbols."""
+    try:
+        results = await training_pipeline.train_all_models(db, symbols)
+        return {"training_results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.websocket("/ws/{channel}")
-async def channel_websocket_endpoint(websocket: WebSocket, channel: str):
+async def websocket_endpoint(websocket: WebSocket, channel: str):
+    """WebSocket endpoint for real-time updates."""
     await handle_websocket(websocket, channel)
