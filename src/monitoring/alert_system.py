@@ -60,3 +60,7 @@ class ModelAlertSystem:
         
         with open(alerts_dir / f'alerts_{timestamp}.json', 'w') as f:
             json.dump(self.alerts, f, indent=2)
+    
+    def load_alerts(self, file_path: str):
+        with open(file_path, 'r') as f:
+            self.alerts = json.load(f)
