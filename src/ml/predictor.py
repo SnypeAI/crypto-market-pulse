@@ -36,10 +36,8 @@ class MarketPredictor:
 
         X, y = [], []
         for i in range(len(data) - lookback):
-            X.append(
-                scaled_features[i : (i + lookback)]
-            )  # Changed format to avoid space before colon
-            y.append(scaled_features[i + lookback, 0])
+            X.append(scaled_features[i:(i+lookback)])
+            y.append(scaled_features[i+lookback,0])
 
         return np.array(X), np.array(y)
 
@@ -59,10 +57,8 @@ class MarketPredictor:
         X, _ = self.prepare_data(data)
 
         # Get predictions from both models
-        lstm_pred = self.lstm_model.predict(X[-1:])  # Removed space before colon
-        rf_pred = self.rf_model.predict(
-            X[-1:].reshape(1, -1)
-        )  # Removed space before colon
+        lstm_pred = self.lstm_model.predict(X[-1:])
+        rf_pred = self.rf_model.predict(X[-1:].reshape(1, -1))
 
         # Ensemble prediction (weighted average)
         prediction = 0.6 * lstm_pred + 0.4 * rf_pred
@@ -73,9 +69,9 @@ class MarketPredictor:
         )
 
         return {
-            "price": original_scale[0, 0],
-            "lstm_confidence": self._calculate_confidence(lstm_pred),
-            "rf_confidence": self._calculate_confidence(rf_pred),
+            "price":original_scale[0,0],
+            "lstm_confidence":self._calculate_confidence(lstm_pred),
+            "rf_confidence":self._calculate_confidence(rf_pred),
         }
 
     def _calculate_confidence(self, prediction):
