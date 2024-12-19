@@ -47,8 +47,8 @@ async def handle_websocket(websocket: WebSocket, channel: str = "all") -> None:
     await manager.connect(websocket, channel)
     try:
         while True:
-            data = await websocket.receive_json()
-            # Process incoming messages if needed
+            # Wait for messages but don't process them yet
+            await websocket.receive_json()
     except Exception as e:
         print(f"WebSocket error: {str(e)}")
     finally:
