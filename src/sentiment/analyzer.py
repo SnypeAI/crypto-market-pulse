@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -34,7 +34,7 @@ class SentimentAnalyzer:
         return [self.analyze_text(text) for text in texts]
 
     def get_weighted_sentiment(
-        self, texts: List[str], weights: List[float] = None
+        self, texts: List[str], weights: Optional[List[float]] = None
     ) -> float:
         if not texts:
             return 0.0
