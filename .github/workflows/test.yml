@@ -27,9 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
+    - name: Create data directories
+      run: |
+        mkdir -p data/metrics
+        mkdir -p data/reports
+    
     - name: Run tests
       run: |
-        pytest --cov=src --cov-report=xml
+        PYTHONPATH=$PWD pytest --cov=src --cov-report=xml
     
     - name: Upload coverage
       uses: codecov/codecov-action@v3
