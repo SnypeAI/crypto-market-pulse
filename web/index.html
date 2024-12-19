@@ -5,85 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Market Pulse</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 </head>
 <body class="bg-gray-900 text-white">
-    <nav class="bg-gray-800 p-4 mb-8">
+    <nav class="bg-gray-800 p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">Crypto Market Pulse</h1>
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold">Crypto Market Pulse</h1>
+                <span class="ml-4 px-2 py-1 bg-green-500 text-white text-sm rounded-full">Live</span>
+            </div>
             <div class="flex space-x-4">
-                <select id="symbolSelect" class="bg-gray-700 rounded px-2 py-1">
-                    <option value="BTC">Bitcoin (BTC)</option>
-                    <option value="ETH">Ethereum (ETH)</option>
-                    <option value="SOL">Solana (SOL)</option>
-                </select>
+                <a href="#dashboard" class="hover:text-blue-400">Dashboard</a>
+                <a href="#predictions" class="hover:text-blue-400">Predictions</a>
+                <a href="#monitor" class="hover:text-blue-400">Monitor</a>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4">
-        <!-- Market Overview -->
+    <main class="container mx-auto p-4">
+        <!-- Status Overview -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-lg font-bold mb-2">Price</h3>
-                <div id="currentPrice" class="text-3xl font-bold text-green-400">$0.00</div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Model Status</h3>
+                <div class="text-3xl font-bold text-green-400">96.8%</div>
+                <div class="text-sm text-gray-400">Average Accuracy</div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-lg font-bold mb-2">Prediction</h3>
-                <div id="prediction" class="text-3xl font-bold text-blue-400">$0.00</div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Active Alerts</h3>
+                <div class="text-3xl font-bold text-yellow-400">2</div>
+                <div class="text-sm text-gray-400">Requiring Attention</div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-lg">
-                <h3 class="text-lg font-bold mb-2">Confidence</h3>
-                <div id="confidence" class="text-3xl font-bold text-yellow-400">0%</div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Predictions Made</h3>
+                <div class="text-3xl font-bold text-blue-400">1,243</div>
+                <div class="text-sm text-gray-400">Last 24 Hours</div>
             </div>
         </div>
 
-        <!-- Technical Analysis Charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="candlestick-chart"></canvas>
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-4">Price History</h3>
+                <canvas id="priceChart" class="w-full"></canvas>
             </div>
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="volume-chart"></canvas>
-            </div>
-        </div>
-
-        <!-- Technical Indicators -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="indicators-chart"></canvas>
-            </div>
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="predictions-chart"></canvas>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-4">Prediction Accuracy</h3>
+                <canvas id="accuracyChart" class="w-full"></canvas>
             </div>
         </div>
 
-        <!-- Model Performance -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="accuracy-chart"></canvas>
-            </div>
-            <div class="bg-gray-800 p-4 rounded-lg">
-                <canvas id="alerts-chart"></canvas>
-            </div>
-        </div>
-        
-        <!-- Alerts and Notifications -->
-        <div class="bg-gray-800 p-6 rounded-lg mb-8">
-            <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
-            <div id="alertsList" class="space-y-2">
-                <!-- Alerts will be inserted here -->
+        <!-- Latest Predictions -->
+        <div class="mt-8 bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-xl font-bold mb-4">Latest Predictions</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="text-left">
+                            <th class="p-2">Currency</th>
+                            <th class="p-2">Current Price</th>
+                            <th class="p-2">Predicted</th>
+                            <th class="p-2">Confidence</th>
+                            <th class="p-2">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t border-gray-700">
+                            <td class="p-2">BTC</td>
+                            <td class="p-2">$42,150.00</td>
+                            <td class="p-2 text-green-400">$42,850.00</td>
+                            <td class="p-2">97.2%</td>
+                            <td class="p-2">2 mins ago</td>
+                        </tr>
+                        <tr class="border-t border-gray-700">
+                            <td class="p-2">ETH</td>
+                            <td class="p-2">$2,250.00</td>
+                            <td class="p-2 text-green-400">$2,280.00</td>
+                            <td class="p-2">96.9%</td>
+                            <td class="p-2">5 mins ago</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
 
     <footer class="bg-gray-800 mt-12 py-8">
         <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>Crypto Market Pulse - Real-time market analysis and predictions</p>
+            <p class="mb-2">Crypto Market Pulse - Real-time cryptocurrency analysis and predictions</p>
+            <p>Last Updated: <span id="lastUpdate">Just now</span></p>
         </div>
     </footer>
 
-    <script src="js/charts.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        // Initialize charts
+        const priceCtx = document.getElementById('priceChart').getContext('2d');
+        const priceChart = new Chart(priceCtx, {
+            type: 'line',
+            data: {
+                labels: ['6h', '5h', '4h', '3h', '2h', '1h', 'Now'],
+                datasets: [{
+                    label: 'BTC Price',
+                    data: [41000, 41500, 42000, 41800, 42200, 42100, 42150],
+                    borderColor: '#60A5FA',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        const accuracyCtx = document.getElementById('accuracyChart').getContext('2d');
+        const accuracyChart = new Chart(accuracyCtx, {
+            type: 'line',
+            data: {
+                labels: ['6h', '5h', '4h', '3h', '2h', '1h', 'Now'],
+                datasets: [{
+                    label: 'Model Accuracy',
+                    data: [0.962, 0.968, 0.971, 0.969, 0.973, 0.97, 0.972],
+                    borderColor: '#34D399',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0.9,
+                        max: 1.0
+                    }
+                }
+            }
+        });
+
+        // Update timestamp
+        setInterval(() => {
+            const lastUpdate = document.getElementById('lastUpdate');
+            lastUpdate.textContent = new Date().toLocaleTimeString();
+        }, 1000);
+    </script>
 </body>
 </html>

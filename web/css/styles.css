@@ -1,0 +1,4 @@
+/* Custom styles can be added here */
+.bg-gradient-pulse {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+}
