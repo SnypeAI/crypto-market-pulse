@@ -1,1 +1,26 @@
-aW1wb3J0IHBhbmRhcyBhcyBwZAoKCmNsYXNzIEZlYXR1cmVFbmdpbmVlcjoKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzZWxmLnRlY2huaWNhbF9mZWF0dXJlcyA9IFsKICAgICAgICAgICAgInJzaSIsCiAgICAgICAgICAgICJtYWNkIiwKICAgICAgICAgICAgImJvbGxpbmdlcl9iYW5kcyIsCiAgICAgICAgICAgICJhdHIiLAogICAgICAgICAgICAidm9sdW1lX3Byb2ZpbGUiLAogICAgICAgIF0KCiAgICBkZWYgY3JlYXRlX2ZlYXR1cmVzKHNlbGYsIGRhdGE6IHBkLkRhdGFGcmFtZSkgLT4gcGQuRGF0YUZyYW1lOgogICAgICAgIGRmID0gZGF0YS5jb3B5KCkKCiAgICAgICAgIyBBZGQgdGVjaG5pY2FsIGluZGljYXRvcnMKICAgICAgICBkZiA9IHNlbGYuYWRkX3RlY2huaWNhbF9pbmRpY2F0b3JzKGRmKQoKICAgICAgICAjIEFkZCB0ZW1wb3JhbCBmZWF0dXJlcwogICAgICAgIGRmID0gc2VsZi5hZGRfdGVtcG9yYWxfZmVhdHVyZXMoZGYpCgogICAgICAgICMgQWRkIG1hcmtldCByZWdpbWUgZmVhdHVyZXMKICAgICAgICBkZiA9IHNlbGYuYWRkX21hcmtldF9yZWdpbWUoZGYpCgogICAgICAgIHJldHVybiBkZgo=
+import pandas as pd
+
+
+class FeatureEngineer:
+    def __init__(self):
+        self.technical_features = [
+            "rsi",
+            "macd",
+            "bollinger_bands",
+            "atr",
+            "volume_profile",
+        ]
+
+    def create_features(self, data: pd.DataFrame) -> pd.DataFrame:
+        df = data.copy()
+
+        # Add technical indicators
+        df = self.add_technical_indicators(df)
+
+        # Add temporal features
+        df = self.add_temporal_features(df)
+
+        # Add market regime features
+        df = self.add_market_regime(df)
+
+        return df
