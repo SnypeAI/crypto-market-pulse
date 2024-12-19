@@ -36,8 +36,8 @@ class MarketPredictor:
 
         X, y = [], []
         for i in range(len(data) - lookback):
-            X.append(scaled_features[i:(i+lookback)])
-            y.append(scaled_features[i+lookback,0])
+            X.append(scaled_features[i : (i + lookback)])
+            y.append(scaled_features[i + lookback, 0])
 
         return np.array(X), np.array(y)
 
@@ -69,9 +69,9 @@ class MarketPredictor:
         )
 
         return {
-            "price":original_scale[0,0],
-            "lstm_confidence":self._calculate_confidence(lstm_pred),
-            "rf_confidence":self._calculate_confidence(rf_pred),
+            "price": original_scale[0, 0],
+            "lstm_confidence": self._calculate_confidence(lstm_pred),
+            "rf_confidence": self._calculate_confidence(rf_pred),
         }
 
     def _calculate_confidence(self, prediction):
