@@ -25,16 +25,20 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -e .
     
     - name: Create data directories
       run: |
         mkdir -p data/metrics
         mkdir -p data/reports
+        mkdir -p reports/predictions
+        mkdir -p reports/monitoring
     
-    - name: Run tests
+    - name: Run tests and scripts
       run: |
-        PYTHONPATH=$PWD pytest --cov=src --cov-report=xml
+        pytest --cov=src --cov-report=xml
+        python scripts/generate_predictions_report.py
+        python scripts/generate_monitoring_report.py
     
     - name: Upload coverage
       uses: codecov/codecov-action@v3
