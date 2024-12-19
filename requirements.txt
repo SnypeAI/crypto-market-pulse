@@ -6,7 +6,7 @@ pytest-cov>=4.0.0
 telegram-send>=0.25
 discord.py>=2.0.0
 textblob>=0.17.1
-vader-sentiment>=3.3.2
+vader-sentiment==3.2.1
 python-dateutil>=2.8.2
 aiohttp>=3.8.5
 asyncio>=3.4.3
