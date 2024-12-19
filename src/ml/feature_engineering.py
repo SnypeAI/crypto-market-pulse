@@ -24,3 +24,18 @@ class FeatureEngineer:
         df = self.add_market_regime(df)
 
         return df
+
+    def add_technical_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add technical indicators to the dataframe."""
+        # TODO: Implement technical indicators
+        return df
+
+    def add_temporal_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add time-based features to the dataframe."""
+        # TODO: Implement temporal features
+        return df
+
+    def add_market_regime(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add market regime classification features."""
+        # TODO: Implement market regime features
+        return df
